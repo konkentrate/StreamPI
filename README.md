@@ -5,7 +5,7 @@ StreamPI is a Raspberry Pi audio platform that integrates JACK audio, AirPlay (v
 ## Installation
 
 ```bash
-git clone https://github.com/yourusername/StreamPI.git
+git clone https://github.com/konkentrate/StreamPI.git
 cd StreamPI
 chmod +x install.sh
 ./install.sh
