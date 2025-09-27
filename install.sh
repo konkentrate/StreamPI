@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-CONFIG="/boot/firmware/config.txt"
-
 echo "==== StreamPi Install ===="
 
 # --- 1. System update ---
@@ -12,12 +10,13 @@ sudo apt-get upgrade -y
 # --- 2. Install packages ---
 sudo apt-get install -y \
   jackd2 \
+  jack-tools \
+  jack-mixer \
   zita-njbridge \
+  zita-ajbridge \
   alsa-utils \
-  git \
-  build-essential \
   shairport-sync \
-  jack-mixer
+
 
 # --- 2b. Install Raspotify ---
 sudo apt-get -y install curl
@@ -34,6 +33,8 @@ if [ ! -f "$SONOBUS_APPIMAGE" ]; then
 fi
 
 # --- 3. Boot overlays ---
+
+CONFIG="/boot/firmware/config.txt"
 
 # Disable onboard Bluetooth
 if ! grep -q "dtoverlay=disable-bt" "$CONFIG"; then
@@ -57,39 +58,7 @@ else
     echo "dtoverlay=vc4-kms-v3d,noaudio" | sudo tee -a "$CONFIG"
 fi
 
-# --- 4. Configure shairport-sync for JACK ---
-sudo tee /etc/shairport-sync.conf >/dev/null <<EOF
-general = {
-    name = "StreamPi-AirPlay";
-};
+sudo reboot now
 
-output_backend = "jack";
-
-jack = {
-  output_rate = 44100;
-};
-EOF
-
-# --- 5. Configure Raspotify for JACK (44.1kHz PCM) ---
-sudo sed -i '/^OPTIONS=/d' /etc/default/raspotify || true
-echo 'OPTIONS="--name StreamPi --backend jack --format S16 --device-type speaker --bitrate 320"' | sudo tee -a /etc/default/raspotify >/dev/null
-
-# --- 6. Install systemd services ---
-echo "Copying StreamPI service files..."
-sudo cp /home/top/Documents/StreamPI/services/*.service /etc/systemd/system/
-
-# Enable and start all StreamPI services
-for svc in /home/top/Documents/StreamPI/services/*.service; do
-    svcname=$(basename "$svc")
-    sudo systemctl enable "$svcname"
-    sudo systemctl restart "$svcname"
-done
-
-# --- 7. Install scripts ---
-echo "Copying StreamPI scripts..."
-for script in /home/top/Documents/StreamPI/scripts/*.sh; do
-    sudo cp "$script" /usr/local/bin/
-    sudo chmod +x "/usr/local/bin/$(basename "$script")"
-done
-
-echo "==== Install complete. Reboot, then enable StreamPi services. ===="
+# --- 4. Final instructions ---
+# Now install the service and script files.

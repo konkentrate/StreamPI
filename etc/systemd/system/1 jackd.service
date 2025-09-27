@@ -1,0 +1,20 @@
+#/etc/systemd/system/jackd.service
+[Unit]
+Description=JACK Audio Server
+After=sound.target
+Requires=sound.target
+
+[Service]
+Type=simple
+Environment=JACK_NO_AUDIO_RESERVATION=1
+ExecStartPre=/bin/sleep 5
+ExecStart=/usr/bin/jackd -d alsa -P hw:0,0 -r 44100 -o 2
+Restart=always
+
+User=top
+LimitRTPRIO=infinity
+LimitMEMLOCK=infinity
+LimitNICE=-19
+
+[Install]
+WantedBy=multi-user.target

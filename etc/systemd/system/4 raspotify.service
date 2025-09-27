@@ -1,0 +1,27 @@
+[Unit]
+Description=Spotify Connect (via JACK)
+After=jackd.service
+Requires=jackd.service
+
+[Service]
+ExecStart=/usr/bin/librespot --name "StreamPi" --backend jack
+Restart=always
+
+User=top
+
+[Install]
+WantedBy=multi-user.target
+
+### Configurations
+
+# Create 4b
+
+# Make fake sound card and make permanent
+# Create /etc/modprobe.d/alsa-base.conf and /etc/modules as in the repo.
+# On reboot sounds cards should be permanent.
+
+# /etc/raspotify/conf
+# LIBRESPOT_BACKEND=alsa
+# LIBRESPOT_DEVICE=hw:Loopback,0
+
+

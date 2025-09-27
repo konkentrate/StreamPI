@@ -1,13 +1,11 @@
 [Unit]
-Description=JACK Audio Server
-After=sound.target
-Requires=sound.target
+Description=ALSA→JACK bridge for Raspotify
+After=raspotify.service
+Wants=raspotify.service
 
 [Service]
-Type=simple
 Environment=JACK_NO_AUDIO_RESERVATION=1
-ExecStartPre=/bin/sleep 5
-ExecStart=/usr/bin/jackd -d alsa -P hw:0,0 -r 44100 -p 256 -n 3
+ExecStart=/usr/bin/alsa_in -j raspotify -d plughw:Loopback,1,0 -c 2 -r 44100
 Restart=always
 
 User=top
