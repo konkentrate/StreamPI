@@ -6,8 +6,9 @@ Requires=jackd.service
 [Service]
 ExecStart=/usr/bin/shairport-sync -d -o jack
 Restart=always
-
 User=top
+
+# Fix JACK warnings
 LimitRTPRIO=infinity
 LimitMEMLOCK=infinity
 LimitNICE=-19
