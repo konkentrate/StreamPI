@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-CONFIG=/boot/firmwware/config.txt
+CONFIG="/boot/firmware/config.txt"
 
 echo "==== StreamPi Install ===="
 
@@ -24,13 +24,19 @@ sudo apt-get install -y \
 # --- 3. Boot overlays ---
 
 # Disable onboard Bluetooth
-grep -q "dtoverlay=disable-bt" $CONFIG || echo "dtoverlay=disable-bt" | sudo tee -a $CONFIG
+if ! grep -q "dtoverlay=disable-bt" "$CONFIG"; then
+    echo "dtoverlay=disable-bt" | sudo tee -a "$CONFIG"
+fi
 
 # Disable onboard audio
-grep -q "dtparam=audio=off" $CONFIG || echo "dtparam=audio=off" | sudo tee -a $CONFIG
+if ! grep -q "dtparam=audio=off" "$CONFIG"; then
+    echo "dtparam=audio=off" | sudo tee -a "$CONFIG"
+fi
 
 # Enable Allo Boss DAC overlay
-grep -q "allo-boss-dac-pcm512x-audio" $CONFIG || echo "dtoverlay=allo-boss-dac-pcm512x-audio" | sudo tee -a $CONFIG
+if ! grep -q "allo-boss-dac-pcm512x-audio" "$CONFIG"; then
+    echo "dtoverlay=allo-boss-dac-pcm512x-audio" | sudo tee -a "$CONFIG"
+fi
 
 # Add noaudio to vc4-kms-v3d overlay
 if grep -q "^dtoverlay=vc4-kms-v3d" "$CONFIG"; then
@@ -56,5 +62,22 @@ EOF
 sudo sed -i '/^OPTIONS=/d' /etc/default/raspotify || true
 echo 'OPTIONS="--name StreamPi --backend jack --format S16 --device-type speaker --bitrate 320"' | sudo tee -a /etc/default/raspotify >/dev/null
 
-# --- 6. Reminder ---
+# --- 6. Install systemd services ---
+echo "Copying StreamPI service files..."
+sudo cp /home/top/Documents/StreamPI/services/*.service /etc/systemd/system/
+
+# Enable and start all StreamPI services
+for svc in /home/top/Documents/StreamPI/services/*.service; do
+    svcname=$(basename "$svc")
+    sudo systemctl enable "$svcname"
+    sudo systemctl restart "$svcname"
+done
+
+# --- 7. Install scripts ---
+echo "Copying StreamPI scripts..."
+for script in /home/top/Documents/StreamPI/scripts/*.sh; do
+    sudo cp "$script" /usr/local/bin/
+    sudo chmod +x "/usr/local/bin/$(basename "$script")"
+done
+
 echo "==== Install complete. Reboot, then enable StreamPi services. ===="
