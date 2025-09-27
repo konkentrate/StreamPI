@@ -2,6 +2,15 @@
 
 StreamPI is a Raspberry Pi audio platform that integrates JACK audio, AirPlay (via Shairport Sync), Spotify Connect (via Raspotify), and network audio tools. It provides a flexible audio routing environment using JACK, with scripts and services for automatic patching and device management.
 
+## Installation
+
+```bash
+git clone https://github.com/yourusername/StreamPI.git
+cd StreamPI
+chmod +x install.sh
+./install.sh
+```
+
 ## TODO
 
 - [x] JackD Audio Server
