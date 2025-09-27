@@ -5,7 +5,7 @@ Requires=zita-n2j.service
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/jack-autoconnect.sh
+ExecStart=/usr/local/bin/jack-autopatch.sh
 Restart=always
 User=top
 

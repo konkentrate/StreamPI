@@ -46,11 +46,15 @@ general = {
 };
 
 output_backend = "jack";
+
+jack = {
+  output_rate = 44100;
+};
 EOF
 
-# --- 5. Configure Raspotify for JACK ---
+# --- 5. Configure Raspotify for JACK (44.1kHz PCM) ---
 sudo sed -i '/^OPTIONS=/d' /etc/default/raspotify || true
-echo 'OPTIONS="--name StreamPi --backend jack"' | sudo tee -a /etc/default/raspotify >/dev/null
+echo 'OPTIONS="--name StreamPi --backend jack --format S16 --device-type speaker --bitrate 320"' | sudo tee -a /etc/default/raspotify >/dev/null
 
 # --- 6. Reminder ---
 echo "==== Install complete. Reboot, then enable StreamPi services. ===="
