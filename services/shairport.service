@@ -1,0 +1,16 @@
+[Unit]
+Description=AirPlay Receiver (via JACK)
+After=jackd.service
+Requires=jackd.service
+
+[Service]
+ExecStart=/usr/bin/shairport-sync -d -o jack
+Restart=always
+
+User=top
+LimitRTPRIO=infinity
+LimitMEMLOCK=infinity
+LimitNICE=-19
+
+[Install]
+WantedBy=multi-user.target

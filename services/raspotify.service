@@ -1,0 +1,13 @@
+[Unit]
+Description=Spotify Connect (via JACK)
+After=jackd.service
+Requires=jackd.service
+
+[Service]
+ExecStart=/usr/bin/librespot --name "StreamPi" --backend jack
+Restart=always
+
+User=top
+
+[Install]
+WantedBy=multi-user.target

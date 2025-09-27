@@ -1,0 +1,22 @@
+                                                         /etc/systemd/system/zita-n2j.service                                                                       
+[Unit]
+Description=Zita n2j network receiver
+After=jackd.service
+Requires=jackd.service
+
+[Service]
+Type=simple
+# wait a bit so jackd is fully ready
+ExecStartPre=/bin/sleep 10
+ExecStart=/usr/bin/zita-n2j --buff 50 --filt 96 --info 192.168.0.57 9000
+Restart=on-failure
+RestartSec=5
+
+User=top
+Environment=JACK_NO_AUDIO_RESERVATION=1
+LimitRTPRIO=infinity
+LimitMEMLOCK=infinity
+LimitNICE=-19
+
+[Install]
+WantedBy=multi-user.target
