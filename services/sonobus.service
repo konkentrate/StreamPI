@@ -4,7 +4,7 @@ After=jackd.service
 Requires=jackd.service
 
 [Service]
-ExecStart=/usr/bin/sonobus --no-gui --jack
+ExecStart=/usr/local/bin/sonobus --headless --jack
 Restart=always
 
 User=top

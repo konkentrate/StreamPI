@@ -17,9 +17,21 @@ sudo apt-get install -y \
   git \
   build-essential \
   shairport-sync \
-  raspotify \
-  sonobus \
   jack-mixer
+
+# --- 2b. Install Raspotify ---
+sudo apt-get -y install curl
+curl -sL https://dtcooper.github.io/raspotify/install.sh | sh
+
+# --- 2c. Install Sonobus ---
+SONOBUS_URL="https://sonobus.net/releases/SonoBus-1.7.0-armhf.AppImage"
+SONOBUS_APPIMAGE="/usr/local/bin/sonobus"
+
+if [ ! -f "$SONOBUS_APPIMAGE" ]; then
+    echo "Downloading Sonobus AppImage..."
+    sudo curl -L "$SONOBUS_URL" -o "$SONOBUS_APPIMAGE"
+    sudo chmod +x "$SONOBUS_APPIMAGE"
+fi
 
 # --- 3. Boot overlays ---
 
