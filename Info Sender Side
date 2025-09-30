@@ -1,0 +1,42 @@
+# Patcher Systemd Service
+[Unit]
+Description=Auto-link MasterOut monitor to SSL2 + zita
+After=pipewire.service pipewire-pulse.service
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c '/home/top/.local/bin/masterout-links.sh'
+
+[Install]
+WantedBy=default.target
+
+# Patcher .sh       
+#!/bin/bash
+# Link MasterOut to SSL2 Line and Zita-j2n on PipeWire startup
+
+# Give PipeWire a few seconds to bring up all nodes
+sleep 3
+
+# Link MasterOut → SSL2 Stereo Line
+pw-link "MasterOut:monitor_FL" "alsa_output.usb-Solid_State_Logic_SSL_2>
+pw-link "MasterOut:monitor_FR" "alsa_output.usb-Solid_State_Logic_SSL_2>
+
+# Link MasterOut → zita-j2n
+pw-link "MasterOut:monitor_FL" "zita-j2n:in_1"
+pw-link "MasterOut:monitor_FR" "zita-j2n:in_2"
+
+exit 0
+
+# Zita J2N Systemd Service
+[Unit]
+Description=Zita-j2n network sender
+After=pipewire.service pipewire-pulse.service network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart=/usr/bin/zita-j2n --chan 2 --24bit 192.168.0.57 9000
+Restart=always
+RestartSec=5s
+
+[Install]
+WantedBy=default.target

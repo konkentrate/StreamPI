@@ -4,7 +4,9 @@ After=jackd.service
 Requires=jackd.service
 
 [Service]
-ExecStart=/usr/bin/librespot --name "StreamPi" --backend jack
+EnvironmentFile=-/etc/raspotify/conf
+ExecStart=/usr/bin/librespot
+# --backend alsa --device plughw:Loopback,1,0
 Restart=always
 
 User=top
@@ -20,8 +22,28 @@ WantedBy=multi-user.target
 # Create /etc/modprobe.d/alsa-base.conf and /etc/modules as in the repo.
 # On reboot sounds cards should be permanent.
 
+#/etc/modules
+#snd-aloop
+
+#/etc/modprobe.d/alsa-base.conf
+#options snd-aloop index=1
+#options snd_soc_pcm512x index=0
+
+#/etc/asound.conf
+#pcm.!default {
+#    type hw
+#    card 0
+#    device 0
+#}
+#ctl.!default {
+#    type hw
+#    card 0
+#}
+
 # /etc/raspotify/conf
 # LIBRESPOT_BACKEND=alsa
-# LIBRESPOT_DEVICE=hw:Loopback,0
+#LIBRESPOT_DEVICE=plughw:Loopback,0
+# LIBRESPOT_NAME="Yamaha Speakers SC"
+
 
 

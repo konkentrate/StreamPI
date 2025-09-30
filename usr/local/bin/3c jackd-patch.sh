@@ -1,4 +1,3 @@
-#/usr/local/bin/jackd-patch.sh
 #!/bin/bash
 
 while true; do
@@ -23,3 +22,5 @@ while true; do
 done
 
 # sudo chmod +x /usr/local/bin/jackd-patch.sh
+#/usr/local/bin/jackd-patch.sh
+
